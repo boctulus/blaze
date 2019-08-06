@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# brillo
-# brillo <intensity>
-# brillo <+N%> 
-# brillo <-N%>
+# blaze
+# blaze <intensity>
+# blaze <+N%> 
+# blaze <-N%>
 
 set_bright () {
 	echo -n 'Setting brightness to '
