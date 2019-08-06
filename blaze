@@ -27,7 +27,7 @@ if [[ -z `echo $1  | egrep ^'\+|-'` ]]; then
 	if [[ -z `echo $1  | grep '[%|p]$'` ]]; then	
 		new=$1
 	else
-		# No sign, con porcentaje --ok
+		# No sign, with porcentaje --ok
 		per="${1:0:${#_p1}-1}"
 		new=`echo "$max * $per / 100" | bc`
 	fi 
@@ -39,7 +39,7 @@ else
 	if [[ -z `echo $1  | egrep '[%|p]$'` ]]; then	
 		new=`echo $current $1 | bc`
 	else
-		# Sign, con porcentaje --ok	
+		# Sign, with porcentaje --ok	
 		per="${1:0:${#_p1}-1}"
 		new=`echo "$current $signo ($current * $abs / 100)" | bc`
 	fi 
