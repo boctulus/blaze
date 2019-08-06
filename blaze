@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# brillo
+# brillo <intensity>
+# brillo <+N%> 
+# brillo <-N%>
+
+set_bright () {
+	echo -n 'Setting brightness to '
+	echo $1 | sudo tee "/sys/class/backlight/$backlight/brightness"
+	echo 
+}
+
+backlight=$(ls /sys/class/backlight/)
+
+current=$(cat /sys/class/backlight/$backlight/brightness)
+max=$(cat /sys/class/backlight/$backlight/max_brightness)
+
+echo "Current brightness: $current " '('$(($current*100/$max))'%)'
+
+[[ $# -eq 0 ]] && exit 0 
+
+sudo true
+
+if [[ -z `echo $1  | egrep ^'\+|-'` ]]; then
+	# No sign, no percentage --ok
+	if [[ -z `echo $1  | grep '[%|p]$'` ]]; then	
+		new=$1
+	else
+		# No sign, con porcentaje --ok
+		per="${1:0:${#_p1}-1}"
+		new=`echo "$max * $per / 100" | bc`
+	fi 
+else
+	signo=${1:0:1}
+	abs=$(echo $1 | egrep -o [0-9]+)
+
+	# Sign, no percentage --ok
+	if [[ -z `echo $1  | egrep '[%|p]$'` ]]; then	
+		new=`echo $current $1 | bc`
+	else
+		# Sign, con porcentaje --ok	
+		per="${1:0:${#_p1}-1}"
+		new=`echo "$current $signo ($current * $abs / 100)" | bc`
+	fi 
+fi
+
+
+[[ $new -gt $max ]] && { echo "Maximium brightness is $max --err"; exit 1; }
+
+set_bright $new
