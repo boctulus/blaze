@@ -5,6 +5,21 @@
 # blaze <+N%> 
 # blaze <-N%>
 
+help=$(cat <<-TEXT
+	BLAZE by @boctulus
+
+	Usage:
+
+	blaze                retrive current value
+	blaze <value>        set an absolute value
+	balze +<value>       increase
+	balze -<value>       decrease
+	blaze +<value>%      increase by some percentage
+	blaze -<value>%      decrease by some percentage
+
+TEXT
+)
+
 set_bright () {
 	echo -n 'Setting brightness to '
 	echo $1 | sudo tee "/sys/class/backlight/$backlight/brightness"
@@ -16,9 +31,16 @@ backlight=$(ls /sys/class/backlight/)
 current=$(cat /sys/class/backlight/$backlight/brightness)
 max=$(cat /sys/class/backlight/$backlight/max_brightness)
 
+echo -e 'Blaze by @boctulus'
+echo -e
 echo "Current brightness: $current " '('$(($current*100/$max))'%)'
 
 [[ $# -eq 0 ]] && exit 0 
+
+if [[ "$1" == '-h' ]] || [[ "$1" == '--help' ]]; then
+		echo -e "$help"
+		exit	
+fi
 
 sudo true
 
